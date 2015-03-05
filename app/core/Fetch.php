@@ -176,15 +176,15 @@
 			echo $paginationDisplay;
 			return $this->stmt;
 		}
-
-	public function trimPost($post)
+//ASSET is hardcoded here for absolute path 
+	public function trimPost($post, $postUrl)
 	{		
 			$words = explode(" ", $post, 51);
 			if(count($words) == 51) {
-				$words[50] = " :::Read More &#10162;";
+				$words[50] = '<br><br><a class="btn btn-primary" href="' . ASSET . 'blog/' . $postUrl . '">' . 'Read More' . '</a>';
 			}
 			$string = implode(" ", $words);
-			echo $string;
+			return $string;
 	}
 
 	public function postDate($date)
@@ -261,6 +261,11 @@
 		==========================================CATEGORY STUFF =================================================================*/
 
 
+
+/*========================================================================================================================
+		==========================================================================================================================
+		==========================================AUTHOR STUFF =================================================================*/
+
 		public function authorAdd($username, $email, $password, $image='photo0055_001_001.jpg') {
 			
 			try {				
@@ -334,6 +339,143 @@
 				$stmt->execute();
 			} catch (PDOException $e) {
 					$error = 'Error deleting member: ' . $e->getMessage();
+					include '../../public/error.html';
+					exit;
+			}
+		}
+/*========================================================================================================================
+		==========================================================================================================================
+		==========================================AUTHOR STUFF =================================================================*/
+
+		/*========================================================================================================================
+		==========================================================================================================================
+		========================================== POST STUFF =================================================================*/
+
+	/*-------------------Update Post--------------------*/
+		public function postUpdate($title, $category, $url, $editor1, $post_id, $categoryID, $keyword, $description)
+		{
+			try {
+				$sql = 'UPDATE blog_posts SET
+				 				postTitle    = :title,
+				 				postCategory = :category,
+				 				postCont 		 = :post,
+				 				postUrl 		 = :postUrl,
+				 				postUpdate   = CURDATE(),
+				 				keyword = :keyword,
+				 				description = :description
+				 				WHERE postID = :id';
+				$stmt = $this->pdo->prepare($sql);
+				$stmt->bindValue(':title', $title);
+				$stmt->bindValue(':category', $category);
+				$stmt->bindValue(':postUrl', $url);
+				$stmt->bindValue(':post', $editor1);
+				$stmt->bindValue(':keyword', $keyword);
+				$stmt->bindValue(':description', $description);
+				$stmt->bindValue(':id', $post_id);				
+				$stmt->execute();
+
+			/* drop post from category_publish */
+				$sql = 'DELETE FROM category_publish WHERE post_id = :id';
+				$stmt = $this->pdo->prepare($sql);
+				$stmt->bindValue(':id', $post_id);
+				$stmt->execute();
+
+			/* re-enter post into category_publish */
+				$sql = 'INSERT INTO category_publish SET
+								category_id = :category_id,
+								post_id = :post_id';
+				$stmt = $this->pdo->prepare($sql);
+				$stmt->bindValue(':category_id', $categoryID);
+				$stmt->bindValue(':post_id', $post_id);
+				$stmt->execute();
+			} catch (PDOException $e) {
+					$error = 'Unable to add to category_publish database.'. $e->getMessage();
+					// include '../../public/error.html';
+					echo $error;
+					exit();
+			}
+
+		}
+		/*------------------Insert into database----------------*/
+		public function postInsert($title, $category, $editor1, $url, $author, $authorID, $categoryID, $keyword, $description)
+		{
+			try {
+				$sql = 'INSERT INTO blog_posts SET
+				 				postTitle = :title,
+				 				postCategory = :category,
+				 				postCont = :post,
+				 				postAuthor = :author_name,
+				 				postUrl = :postUrl,
+				 				postDate = CURDATE(),
+				 				keyword = :keyword,
+				 				description = :description';
+				$stmt = $this->pdo->prepare($sql);
+				$stmt->bindValue(':title', $title);
+				$stmt->bindValue(':category', $category);
+				$stmt->bindValue(':post', $editor1);
+				$stmt->bindValue(':postUrl', $url);
+				$stmt->bindValue(':author_name', $author);
+				$stmt->bindValue(':keyword', $keyword);
+				$stmt->bindValue(':description', $description);
+				$stmt->execute();
+
+
+				$lastId = $this->pdo->lastInsertId();
+				/* insert into author_publish */		
+				$sql = 'INSERT INTO author_publish SET
+								author_id = :author,
+								post_id = :post_id';
+				$stmt = $this->pdo->prepare($sql);
+				$stmt->bindValue(':author', $authorID);
+				$stmt->bindValue(':post_id', $lastId);
+				$stmt->execute();
+			
+
+
+
+
+				/* insert into category_publish */			
+				$sql = 'INSERT INTO category_publish SET
+								category_id = :category_id,
+								post_id = :post_id';
+				$stmt = $this->pdo->prepare($sql);
+				$stmt->bindValue(':category_id', $categoryID);
+				$stmt->bindValue(':post_id', $lastId);
+				$stmt->execute();
+
+			} catch (PDOException $e) {
+					$error = 'Unable to add to category_publish database.'. $e->getMessage();
+					include '../../public/error.html';
+					exit();
+			}
+
+
+		}
+
+
+		/*---------------- Delete post------------------*/
+		public function postDelete($postID)
+		{
+			try {						
+				$sql 	= 'DELETE FROM blog_posts WHERE postID = :id';
+				$stmt = $this->pdo->prepare($sql);
+				$stmt->bindValue(':id', $postID);
+				$stmt->execute();
+
+				//Delete author-publish
+				$sql 	= 'DELETE FROM author_publish WHERE post_id = :id';
+				$stmt = $this->pdo->prepare($sql);
+				$stmt->bindValue(':id', $postID);
+				$stmt->execute();
+
+				//Delete category publish
+				$sql 	= 'DELETE FROM category_publish WHERE post_id = :id';
+				$stmt = $this->pdo->prepare($sql);
+				$stmt->bindValue(':id', $postID);
+				$stmt->execute();
+
+			} catch (PDOException $e) {
+					$error = 'Error deleting post: ' . $e->getMessage();
 					include '../../public/error.html';
 					exit;
 			}

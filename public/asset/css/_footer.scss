@@ -1,0 +1,11 @@
+.footer {
+	// height: 200px;
+	background: #37474F;
+	color: #fff;
+}
+
+@media screen and (max-width: 480px) {
+	.footer {
+		padding-left: 40px;
+	}
+}

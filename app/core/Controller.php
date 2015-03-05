@@ -8,12 +8,6 @@
 class Controller {
 	public static $called_model;
 	public function __construct() {
-//      echo 'main controller<br>';
-		// $this->view = new View;
-			// $data = [];
-		//     echo '<pre>';
-		// print_r(get_declared_classes());
-		// echo '</pre>';
 	}
 
 

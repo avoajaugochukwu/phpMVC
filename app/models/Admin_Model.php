@@ -112,14 +112,112 @@ public function am_addAuthor($username, $email, $password)
 		$result = $this->connect->authorDelete($id);
 	}
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+	///////////////////////////////////////////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////////////////////////////////
+	public function get_all_post()
+	{
+		// $result = $this->connect->paginate(3);
+		$result = $this->connect->select('blog_posts', 1, 'ASC', 100);
+
+		foreach ($result as $row) {
+				$posts[] = array('post_title'    => $row['postTitle'],
+												 'post_author'   => $row['postAuthor'],
+												 'post_content'  => $row['postCont'],
+												 'post_url'	 		 => $row['postUrl'],
+												 'post_date'     => $row['postDate'],
+												 'post_update'   => $row['postUpdate'],
+												 'post_category' => $row['postCategory'],
+												 'post_id'			 => $row['postID']
+									);
+		}
+		return $posts;
+	}
+
+	public function get_author_for_add_form()
+	{
+		/* get Author */
+		$result = $this->connect->select('blog_members', 1, 'DESC', 100);
+		foreach ($result as $row) {
+			$authors[] = array('author_id' => $row['memberID'], 'name' => $row['username']);
+		}
+
+		return $authors;
+	}
+
+	public function get_category_for_add_form()
+	{
+		/* get Categories */
+		$result = $this->connect->select('blog_categories', 1, 'DESC', 100);
+		foreach ($result as $row) {
+			$categories[] = array('category_id' => $row['categoryID'], 'category' => $row['category']);
+		}
+
+		return $categories;
+	}
+
+	public function am_generate_url($url)
+	{
+		return $this->connect->generateUrl($url);
+	}
+
+	public function am_add_post($title, $editor1, $url, $authorID, $categoryID, $keyword, $description)
+	{
+		$result = $this->connect->fetchWhereSingle('blog_categories', 'categoryID', $categoryID);
+		foreach ($result as $row) {
+			$category 	= $row['category'];
+			$categoryID = $row['categoryID'];
+		}
+
+		$result = $this->connect->fetchWhereSingle('blog_members', 'memberID', $authorID);
+		foreach ($result as $row) {
+			$author 		= $row['username'];
+			$authorID		= $row['memberID'];
+		}
 
 
+		$this->connect->postInsert($title, $category, $editor1, $url, $author, $authorID, $categoryID, $keyword, $description);
 
+	}
 
+	public function am_getPostForEdit($id)
+	{
+		$result = $this->connect->fetchWhereSingle('blog_posts', 'postID', $id);
 
+		$response = [];
 
+		foreach ($result as $row) {
+			foreach ($result as $row) {
+				$response['postID'] = $row['postID'];
+				$response['postTitle'] = $row['postTitle'];
+				$response['postCategory'] = $row['postCategory'];
+				$response['postCont'] = $row['postCont'];
+				$response['postAuthor'] = $row['postAuthor'];
+				$response['keyword'] = $row['keyword'];
+				$response['description'] = $row['description'];
+			}
+		}
 
+		return $response;
+	}
 
+public function am_updatePost($title, $url, $editor1, $post_id, $categoryID, $keyword, $description)
+{
+	$result = $this->connect->fetchWhereSingle('blog_categories', 'categoryID', $categoryID);
+	foreach ($result as $row) {
+		$category 	= $row['category'];
+		$categoryID = $row['categoryID'];
+	}
+	echo '<h1>' . $post_id . '</h1>';
+	$this->connect->postUpdate($title, $category, $url, $editor1, $post_id, $categoryID, $keyword, $description);
+}
+
+	public function am_deletePost($id)
+	{
+		$result = $this->connect->postDelete($id);
+	}
 
 
 

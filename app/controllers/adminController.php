@@ -94,10 +94,34 @@ class adminController extends Controller {
 
 
 
-	public function post()
+	public function post($method_verb = NULL, $id = NULL)
 	{
-		echo 'I am the post';
+		echo $method_verb . '  ' . $id;
+		if($this->check_for_login_logout())
+		{
+			// echo '<h1>'. 'Ctegory is ready'.'</h1>';
+			if (isset($method_verb))
+			{
+				// require_once 'admin/categoryController.php';
+				$postController = 'postController';
+				$this->postController = new $postController;
+
+
+				$this->postController->urlchecker($method_verb, $id);
+			}
+
+
+			$data['posts'] = parent::call_method($this->model, 'get_all_post');
+			$data['title'] = 'Post List';
+			$data['heading'] = $data['title'];
+			View::render('admin/post/index', $data);
+		}
+
 	}
+
+
+
+
 
 	public function check_for_login_logout()
 	{

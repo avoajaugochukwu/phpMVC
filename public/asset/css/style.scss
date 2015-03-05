@@ -1,0 +1,77 @@
+@import "bootstrap-3.min.css";
+@import "shCore.css";
+@import "shThemeRDark.css";
+@import "header";
+@import "home";
+@import "blog";
+@import "footer";
+
+
+* {
+	margin: 0;
+	padding: 0;
+	border-radius: 0 !important;
+}
+a {
+	text-decoration: none;
+}
+a:hover {
+	text-decoration: none;
+}
+body {
+	font-family: 'weblysleek';
+	color: #000;
+}
+.items {
+	background: #cec;
+}
+.btn-danger {
+	background: #f60;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@font-face {
+    font-family: 'roboto';
+
+	  src: url('../font/roboto/Roboto-Light.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+@font-face {
+    font-family: 'weblysleek';
+	  src: url('../font/weblysleek/weblysleekuil.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}

@@ -3,24 +3,22 @@
 class Blog_Model extends Model {
 
 		function __construct() {
-			// parent::__construct();
 			$this->connect = $this->getDb();
-			// print_r($this->db);
-			
 		}
 
 		public function get_recent_posts()
 		{
-		
-			$result = $this->connect->recentPost('blog_posts', 1, 'DESC', 1, 2);
+
+			$result = $this->connect->recentPost('blog_posts', 1, 'DESC', 1, 4);
 
 			foreach ($result as $row) {
 				$recents[] = array(
 											'postTitle' => $row['postTitle'],
-											'postUrl'	 => $row['postUrl']
+											'postUrl'	 => $row['postUrl'],
+											'postAuthor' => $row['postAuthor'],
+											'postContent' => $this->connect->trimPost($row['postCont'], $row['postUrl'])
 					);
 			}
-
 			return $recents;
 		}
 

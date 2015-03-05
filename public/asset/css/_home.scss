@@ -1,0 +1,72 @@
+.home-jumbotron {
+	background: url('../img/slide1_image.jpg');
+	background: url('../img/large.png');
+	height: 400px;
+	text-align: center;
+	color: #ff0;
+}
+.home-jumbotron-inner {
+	padding: 100px;
+	height: 100%;
+	background: rgba(255, 0, 0, 0.6);
+}
+.home-jumbotron h1 {
+	font-size: 6em;
+	color: #fff;
+}
+
+.description {
+	font-size: 1.5em;
+	line-height: 35px;
+	color: #fff;
+	margin-top: 100px;
+	text-align: center;
+	padding: 20px;
+}
+.home-body h2 {
+	font-size: 3em;
+	text-align: center;
+}
+
+.first {
+	padding: 30px 0;
+	color: #fff;
+	background: #FF5722;
+}
+.first .description {
+	@extend .description;
+	border: 1px #cec solid;
+}
+
+.second {
+	padding: 30px 0;
+	color: #fff;
+	background: #009688;
+}
+.second .description {
+	@extend .description;
+	border: 1px #ff0 solid;
+}
+
+.third {
+	color: #fff;
+	padding: 20px 0;
+	background: #E91E63;
+}
+
+.third .description {
+	@extend .description;
+	border: 1px #cec solid;
+}
+
+@media screen and (max-width: 480px) {
+	.description {
+		margin: 10px;
+	}
+	.home-jumbotron-inner {
+		padding: 30px;
+	}
+	.home-jumbotron h1 {
+		font-size: 4.5em;
+	}
+}
