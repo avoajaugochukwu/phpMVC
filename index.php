@@ -3,11 +3,12 @@
 	*	@author Avoaja Ugochukwu
 	* @version Biit to Framework version 1.0
 	* @todo use autoloader to load classes
+	* @todo add soft delete for posts so the can be recycled
 	*/
 
 	define('DS',   DIRECTORY_SEPARATOR);
 	define('ROOT', dirname(__FILE__) . DS);
-	define('APP', ROOT . 'app' . DS);
+	define('APP', ROOT . 'mvc-application' . DS);
 
 
 
